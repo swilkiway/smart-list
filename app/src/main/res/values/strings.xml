@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">SmartList</string>
+    <string name="algorithm_q">How does the algorithm work?</string>
+    <string name="algorithm_help">The algorithm keeps track of how many times you\'ve bought the item, as
+        well as how many trips you\'ve made since that item was first added to one of your lists, and
+        calculates how often you buy it using that. As you make more trips and it gathers more data,
+        its accuracy increases.\n</string>
+    <string name="red_X_q">What are the red X\'s for on the shopping list?</string>
+    <string name="red_X_help">That\'s for if you decide you don\'t need that item after all. That way, the
+        predictive algorithm that guesses if you want to buy the item in future weeks won\'t accidentally
+        take into account you buying an item when you actually didn\'t.\n</string>
+    <string name="one_time_q">What if I\'m making a one-time purchase?</string>
+    <string name="one_time_help">If you don\'t want an item to be suggested again, you can do two things
+        to prevent it. First, during your shopping trip, if you hit the red X by that item instead of
+        the checkbox, then the algorithm will treat it as if you didn\'t buy the item and won\'t include
+        it in the items to suggest. If you accidentally hit the checkbox, you can go to the \"Previously
+        bought items\" section and remove that item from the database.\n</string>
+    <string name="remove_item_q">Do old items ever get deleted automatically?</string>
+    <string name="remove_item_help">Yes. If you go for more than a certain number of weeks without buying
+        a saved item, the algorithm will assume it was a one-time purchase and will delete it from the
+        database. The default is 6 weeks, but you can modify that in Settings.\n</string>
+</resources>

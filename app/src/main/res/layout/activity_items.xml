@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ItemsActivity">
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/leftSideGuideline"
+        app:layout_constraintGuide_percent=".05"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/middleLeftGuideline"
+        app:layout_constraintGuide_percent=".27"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/middleRightGuideline"
+        app:layout_constraintGuide_percent=".5"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/rightSideGuideline"
+        app:layout_constraintGuide_percent=".95"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Item"
+        android:id="@+id/header"
+        app:layout_constraintEnd_toEndOf="@id/middleLeftGuideline" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reminder Frequency"
+        app:layout_constraintStart_toStartOf="@id/middleRightGuideline"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemsList"
+        app:layout_constraintStart_toStartOf="@id/leftSideGuideline"
+        app:layout_constraintTop_toBottomOf="@id/header"/>
+
+</android.support.constraint.ConstraintLayout>
