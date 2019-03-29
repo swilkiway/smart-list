@@ -3,30 +3,36 @@ package coolness.smartlist;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Switch;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsFragment extends Fragment {
 
     private EditText expireNum;
     private int numberWeeks;
     private Switch remindersButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_settings, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String storedWeeks = sharedPref.getString("storedWeeks", "6");
         boolean storedReminders = sharedPref.getBoolean("storedReminders",true);
-        expireNum = findViewById(R.id.expire_num);
+        expireNum = view.findViewById(R.id.expire_num);
         expireNum.setText(storedWeeks);
         expireNum.addTextChangedListener(new TextWatcher() {
             @Override
@@ -53,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        remindersButton = findViewById(R.id.reminders_button);
+        remindersButton = view.findViewById(R.id.reminders_button);
         remindersButton.setChecked(storedReminders);
         remindersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +70,5 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.apply();
             }
         });
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivityForResult(myIntent, 0);
-        return true;
     }
 }

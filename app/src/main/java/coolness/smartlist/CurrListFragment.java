@@ -2,17 +2,19 @@ package coolness.smartlist;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,7 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ListActivity extends AppCompatActivity {
+public class CurrListFragment extends Fragment {
 
     private Button addItem;
     private EditText newItem;
@@ -29,11 +31,14 @@ public class ListActivity extends AppCompatActivity {
     private GroceryAdapter groceryAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        RecyclerView groceryList = findViewById(R.id.groceryList);
-        RecyclerView.LayoutManager groceryManager = new LinearLayoutManager(this);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        RecyclerView groceryList = view.findViewById(R.id.groceryList);
+        RecyclerView.LayoutManager groceryManager = new LinearLayoutManager(getContext());
         groceryList.setLayoutManager(groceryManager);
         if (Settings.getCurrentList() != null) {
             groceryAdapter = new GroceryAdapter(this, Settings.getCurrentList());
@@ -41,7 +46,7 @@ public class ListActivity extends AppCompatActivity {
             groceryAdapter = new GroceryAdapter(this);
         }
         groceryList.setAdapter(groceryAdapter);
-        newItem = findViewById(R.id.newItem);
+        newItem = view.findViewById(R.id.newItem);
         newItem.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -68,7 +73,7 @@ public class ListActivity extends AppCompatActivity {
                 return handled;
             }
         });
-        addItem = findViewById(R.id.addItem);
+        addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,12 +82,12 @@ public class ListActivity extends AppCompatActivity {
                 } else {
                     newItem.setVisibility(View.VISIBLE);
                     newItem.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
             }
         });
-        doneShopping = findViewById(R.id.doneShopping);
+        doneShopping = view.findViewById(R.id.doneShopping);
         doneShopping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,8 +98,6 @@ public class ListActivity extends AppCompatActivity {
         if (groceryAdapter.anyItemsChecked()) {
             doneShopping.setEnabled(true);
         }
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     public void anyItemsChecked(boolean checked) {
@@ -105,23 +108,11 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Settings.closeProgram(this);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivityForResult(myIntent, 0);
-        return true;
-    }
-
     public void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = getActivity().getCurrentFocus();
         if (view == null) {
-            view = new View(this);
+            view = new View(getContext());
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
@@ -129,9 +120,9 @@ public class ListActivity extends AppCompatActivity {
     public boolean onItemAdded() {
         boolean handled = false;
         if (newItemName.equals("")) {
-            Toast.makeText(ListActivity.this, "Please enter an item name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CurrListFragment.this.getContext(), "Please enter an item name", Toast.LENGTH_SHORT).show();
         } else if (Settings.listContains(newItemName)) {
-            Toast.makeText(ListActivity.this, "That's already on your list", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CurrListFragment.this.getContext(), "That's already on your list", Toast.LENGTH_SHORT).show();
         } else {
             ListItem newGrocery = new ListItem(newItemName);
             groceryAdapter.addItem(newGrocery);
@@ -139,7 +130,7 @@ public class ListActivity extends AppCompatActivity {
             handled = true;
             newItem.setVisibility(View.GONE);
             hideKeyboard();
-            Settings.writeCurrentList(ListActivity.this);
+            Settings.writeCurrentList(CurrListFragment.this.getActivity());
         }
         return handled;
     }

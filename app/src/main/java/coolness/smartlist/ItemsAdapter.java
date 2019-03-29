@@ -1,5 +1,6 @@
 package coolness.smartlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -15,19 +16,19 @@ import java.util.Date;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder> {
     private ArrayList<PreviousItem> items;
-    private Context context;
-    public ItemsAdapter(Context c) {
-        context = c;
+    private Activity activity;
+    public ItemsAdapter(Activity a) {
+        activity = a;
         items = new ArrayList<>();
     }
-    public ItemsAdapter(Context c, ArrayList<PreviousItem> g) {
-        context = c;
+    public ItemsAdapter(Activity a, ArrayList<PreviousItem> g) {
+        activity = a;
         items = g;
     }
     @Override
     @NonNull
     public ItemsAdapter.ItemsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(activity);
         return new ItemsAdapter.ItemsHolder(inflater.inflate(R.layout.item_prev, parent, false));
     }
     @Override
@@ -44,8 +45,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
         }
     }
 
-    public void removeItem(PreviousItem item) {
-        Settings.removeFromPreviousItems(item);
+    public void removeItem(PreviousItem item, Activity activity) {
+        Settings.removeFromPreviousItems(item, activity);
         notifyDataSetChanged();
     }
 
@@ -62,7 +63,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ItemsAdapter.this.removeItem(grocery);
+                    ItemsAdapter.this.removeItem(grocery, ItemsAdapter.this.activity);
                     notifyDataSetChanged();
                 }
             });

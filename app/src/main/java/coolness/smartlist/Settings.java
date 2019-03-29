@@ -21,8 +21,9 @@ public class Settings {
     public static void addToList(ListItem grocery) {
         currentList.add(grocery);
     }
-    public static void removeFromList(ListItem grocery) {
+    public static void removeFromList(ListItem grocery, Activity activity) {
         currentList.remove(grocery);
+        writeCurrentList(activity);
     }
     public static boolean listContains(String grocery) {
         for (ListItem g : currentList) {
@@ -47,8 +48,9 @@ public class Settings {
         writeCurrentList(activity);
     }
     public static ArrayList<PreviousItem> getPreviousItems() { return previousItems; }
-    public static void removeFromPreviousItems(PreviousItem item) {
+    public static void removeFromPreviousItems(PreviousItem item, Activity activity) {
         previousItems.remove(item);
+        writePreviousItems(activity);
     }
     public static void readPreviousItems(Activity activity) {
         File file = new File(activity.getFilesDir(), "prevItems.txt");

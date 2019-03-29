@@ -1,6 +1,5 @@
 package coolness.smartlist;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,19 +13,19 @@ import java.util.ArrayList;
 
 public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryHolder> {
     private ArrayList<ListItem> groceries;
-    private ListActivity activity;
-    public GroceryAdapter(ListActivity a) {
-        activity = a;
+    private CurrListFragment fragment;
+    public GroceryAdapter(CurrListFragment a) {
+        fragment = a;
         groceries = new ArrayList<>();
     }
-    public GroceryAdapter(ListActivity a, ArrayList<ListItem> g) {
-        activity = a;
+    public GroceryAdapter(CurrListFragment a, ArrayList<ListItem> g) {
+        fragment = a;
         groceries = g;
     }
     @Override
     @NonNull
     public GroceryAdapter.GroceryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(activity);
+        LayoutInflater inflater = LayoutInflater.from(fragment.getActivity());
         return new GroceryHolder(inflater.inflate(R.layout.item_list, parent, false));
     }
     @Override
@@ -44,7 +43,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
     }
 
     public void removeItem(ListItem item) {
-        Settings.removeFromList(item);
+        Settings.removeFromList(item, fragment.getActivity());
         notifyDataSetChanged();
     }
 
@@ -54,7 +53,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
     }
 
     public void clearCheckedItems() {
-        Settings.clearCheckedItems(activity);
+        Settings.clearCheckedItems(fragment.getActivity());
         notifyDataSetChanged();
     }
 
@@ -68,7 +67,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
     }
 
     public void informActivityItemsChecked() {
-        activity.anyItemsChecked(anyItemsChecked());
+        fragment.anyItemsChecked(anyItemsChecked());
     }
 
     class GroceryHolder extends RecyclerView.ViewHolder {
