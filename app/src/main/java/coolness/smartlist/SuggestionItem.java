@@ -7,7 +7,7 @@ public class SuggestionItem {
     public SuggestionItem(String name, long millis) {
         this.name = name;
         weeksSinceBought = (int)(millis / 604800000L);
-        checked = false;
+        checked = true;
     }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

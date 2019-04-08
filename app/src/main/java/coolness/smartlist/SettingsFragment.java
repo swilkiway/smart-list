@@ -1,16 +1,13 @@
 package coolness.smartlist;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -19,7 +16,6 @@ import android.widget.Switch;
 public class SettingsFragment extends Fragment {
 
     private EditText expireNum;
-    private int numberWeeks;
     private Switch remindersButton;
 
     @Override
@@ -30,7 +26,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String storedWeeks = sharedPref.getString("storedWeeks", "6");
+        String storedWeeks = sharedPref.getString("storedWeeks",  Constants.expireWeeks);
         boolean storedReminders = sharedPref.getBoolean("storedReminders",true);
         expireNum = view.findViewById(R.id.expire_num);
         expireNum.setText(storedWeeks);
@@ -45,7 +41,6 @@ public class SettingsFragment extends Fragment {
                 if (!charSequence.toString().equals("")) {
                     int tmp = Integer.parseInt(charSequence.toString());
                     if (tmp > 0) {
-                        numberWeeks = tmp;
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.clear();
                         editor.putString("storedWeeks", charSequence.toString());

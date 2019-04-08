@@ -21,11 +21,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/sinceGuideline"
-        app:layout_constraintGuide_percent=".75"/>
+        app:layout_constraintGuide_percent=".9"/>
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/wantButton"
+        android:checked="true"
         app:layout_constraintStart_toStartOf="@id/checkboxGuideline"/>
     <TextView
         android:layout_width="wrap_content"

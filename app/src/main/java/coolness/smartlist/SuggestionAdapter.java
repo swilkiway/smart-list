@@ -94,7 +94,8 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
             suggestion = s;
             wantButton.setChecked(suggestion.isChecked());
             nameView.setText(s.getName());
-            String sinceBought = s.getWeeksSinceBought() + " weeks since bought";
+            int weeks = s.getWeeksSinceBought();
+            String sinceBought = (weeks == 1 ? "1 week " : weeks + " weeks ") + "since bought";
             sinceBoughtView.setText(sinceBought);
         }
     }
