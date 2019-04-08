@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:title="Current List" />
+            android:id="@+id/nav_shopping_list"
+            android:title="@string/drawer_shopping_list" />
         <item
-            android:id="@+id/nav_gallery"
-            android:title="Previous Items" />
+            android:id="@+id/nav_prev_items"
+            android:title="@string/drawer_prev_items" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:title="Settings" />
+            android:id="@+id/nav_settings"
+            android:title="@string/drawer_settings" />
         <item
-            android:id="@+id/nav_manage"
-            android:title="Help" />
+            android:id="@+id/nav_help"
+            android:title="@string/drawer_help" />
     </group>
 </menu>

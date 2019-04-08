@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkboxGuideline"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".05"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameGuideline"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".15"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/sinceGuideline"
+        app:layout_constraintGuide_percent=".9"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wantButton"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="@id/checkboxGuideline"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemName"
+        android:textSize="10pt"
+        app:layout_constraintStart_toStartOf="@id/nameGuideline"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sinceBought"
+        android:textSize="10pt"
+        app:layout_constraintEnd_toEndOf="@id/sinceGuideline"/>
+
+</android.support.constraint.ConstraintLayout>

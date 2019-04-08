@@ -10,8 +10,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,16 +48,18 @@ public class MainActivity extends AppCompatActivity {
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.content_frame, fragment).addToBackStack(null);
                         ft.commit();
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-
                         return true;
                     }
                 });
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-        Fragment fragment = new CurrListFragment();
+        Fragment fragment;
+        if (Settings.getSuggestions(new Date().getTime()) != null) {
+            fragment = new SuggestionFragment();
+        } else {
+            fragment = new CurrListFragment();
+        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.content_frame, fragment);

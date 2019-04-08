@@ -10,8 +10,10 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Settings {
+    private static int expirationWeeks = 6;
     private static ArrayList<ListItem> currentList = new ArrayList<>();
     private static ArrayList<PreviousItem> previousItems = new ArrayList<>();
+    public static int getExpirationWeeks() { return expirationWeeks; }
     public static ArrayList<ListItem> getCurrentList() {
         return currentList;
     }
@@ -20,6 +22,12 @@ public class Settings {
     }
     public static void addToList(ListItem grocery) {
         currentList.add(grocery);
+    }
+    public static void addToList(ArrayList<SuggestionItem> suggestions, Activity activity) {
+        for (SuggestionItem s : suggestions) {
+            addToList(new ListItem(s.getName()));
+        }
+        writeCurrentList(activity);
     }
     public static void removeFromList(ListItem grocery, Activity activity) {
         currentList.remove(grocery);
@@ -33,6 +41,15 @@ public class Settings {
         }
         return false;
     }
+    public static void updatePrevItems(String name, long today) {
+        for (PreviousItem p : previousItems) {
+            if (p.getName().toLowerCase().equals(name)) {
+                p.addTimeBought(today);
+                return;
+            }
+        }
+        previousItems.add(new PreviousItem(name, today));
+    }
     public static void setChecked(ListItem g, boolean checked) {
         int index = currentList.indexOf(g);
         currentList.get(index).setChecked(checked);
@@ -40,7 +57,7 @@ public class Settings {
     public static void clearCheckedItems(Activity activity) {
         for (int i = currentList.size() - 1; i >= 0; i--) {
             if (currentList.get(i).isChecked()) {
-                previousItems.add(new PreviousItem(currentList.get(i).getName(), new Date().getTime()));
+                updatePrevItems(currentList.get(i).getName(), new Date().getTime());
                 currentList.remove(i);
             }
         }
@@ -51,6 +68,24 @@ public class Settings {
     public static void removeFromPreviousItems(PreviousItem item, Activity activity) {
         previousItems.remove(item);
         writePreviousItems(activity);
+    }
+    private static void removeExpiredItems(long today) {
+        for (int i = previousItems.size() - 1; i >= 0; i--) {
+            if (previousItems.get(i).hasExpired(today)) {
+                previousItems.remove(i);
+            }
+        }
+    }
+    public static ArrayList<SuggestionItem> getSuggestions(long today) {
+        removeExpiredItems(today);
+        ArrayList<SuggestionItem> suggestions = new ArrayList<>();
+        for (PreviousItem p : previousItems) {
+            if (p.shouldBeSuggested(today)) {
+                suggestions.add(new SuggestionItem(p.getName(), p.getWeeksSinceBought(today)));
+                p.setLastSuggested(today);
+            }
+        }
+        return (suggestions.size() > 0 ? suggestions : null);
     }
     public static void readPreviousItems(Activity activity) {
         File file = new File(activity.getFilesDir(), "prevItems.txt");
@@ -64,6 +99,7 @@ public class Settings {
                 tmp.setNumTimesBought(scanner.nextInt());
                 tmp.setLastSuggested(scanner.nextLong());
                 tmp.setNextSuggestion(scanner.nextInt());
+                tmp.setLastBought(scanner.nextLong());
                 previousItems.add(tmp);
             }
         } catch (Exception e) {
@@ -110,7 +146,7 @@ public class Settings {
     private static String stringifyPrevItems() {
         StringBuilder sb = new StringBuilder();
         for (PreviousItem p : previousItems) {
-            String currLine = p.getName() + "," + p.getMillisSinceAdded() + "," + p.getNumTimesBought() + "," + p.getLastSuggested() + "," + p.getNextSuggestion() + ",";
+            String currLine = p.getName() + "," + p.getMillisSinceAdded() + "," + p.getNumTimesBought() + "," + p.getLastSuggested() + "," + p.getNextSuggestion() + "," + p.getLastBought() + ",";
             sb.append(currLine);
         }
         return sb.toString();
