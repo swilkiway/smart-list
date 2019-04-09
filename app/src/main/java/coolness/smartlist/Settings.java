@@ -64,6 +64,15 @@ public class Settings {
         writePreviousItems(activity);
         writeCurrentList(activity);
     }
+    public static void modifyListItem(String oldName, String newName, Activity activity) {
+        for (int i = 0; i < currentList.size(); i++) {
+            if (currentList.get(i).getName().equals(oldName)) {
+                currentList.get(i).setName(newName);
+                break;
+            }
+        }
+        writeCurrentList(activity);
+    }
     public static ArrayList<PreviousItem> getPreviousItems() { return previousItems; }
     public static void removeFromPreviousItems(PreviousItem item, Activity activity) {
         previousItems.remove(item);

@@ -38,4 +38,5 @@
     <string name="suggestions_header">You haven\'t bought these items in a while.\nWould you like to add them to the list?</string>
     <string name="suggestions_checked">Keep Checked</string>
     <string name="suggestions_reject">Reject All</string>
+    <string name="edit_hint">enter an item name</string>
 </resources>
