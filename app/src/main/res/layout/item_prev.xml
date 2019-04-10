@@ -9,13 +9,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/textGuideline"
-        app:layout_constraintGuide_percent=".2"/>
+        app:layout_constraintGuide_percent=".19"/>
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/frequencyGuideline"
-        app:layout_constraintGuide_percent=".63"/>
+        app:layout_constraintGuide_percent=".62"/>
     <Button
         android:layout_width="24dp"
         android:layout_height="24dp"

@@ -105,6 +105,10 @@ public class CurrListFragment extends Fragment {
         }
     }
 
+    public void setAddButtonVisibility(int visibility) {
+        addItem.setVisibility(visibility);
+    }
+
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = getActivity().getCurrentFocus();

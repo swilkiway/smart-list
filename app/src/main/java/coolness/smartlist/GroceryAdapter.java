@@ -1,5 +1,6 @@
 package coolness.smartlist;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -66,6 +68,15 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
         return false;
     }
 
+    public void setAddButtonVisibility(int visibility) {
+        fragment.setAddButtonVisibility(visibility);
+    }
+
+    public void modifyItem(String oldName, String newName, Activity activity) {
+        Settings.modifyListItem(oldName, newName, activity);
+        notifyDataSetChanged();
+    }
+
     public void informActivityItemsChecked() {
         fragment.anyItemsChecked(anyItemsChecked());
     }
@@ -75,10 +86,44 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
         private CheckBox boughtButton;
         private ListItem grocery;
         private TextView nameView;
+        private EditText nameEdit;
+        private Button editCheck;
+        private Button editCancel;
         GroceryHolder(View view) {
             super(view);
             nameView = view.findViewById(R.id.itemName);
+            nameEdit = view.findViewById(R.id.itemEdit);
             removeButton = view.findViewById(R.id.notButton);
+            boughtButton = view.findViewById(R.id.gotButton);
+            editCheck = view.findViewById(R.id.editCheck);
+            editCancel = view.findViewById(R.id.editCancel);
+            nameView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GroceryAdapter.this.setAddButtonVisibility(View.GONE);
+                    nameView.setVisibility(View.GONE);
+                    boughtButton.setVisibility(View.GONE);
+                    removeButton.setVisibility(View.GONE);
+                    nameEdit.setVisibility(View.VISIBLE);
+                    nameEdit.setText(grocery.getName());
+                    editCancel.setVisibility(View.VISIBLE);
+                    editCheck.setVisibility(View.VISIBLE);
+                }
+            });
+            nameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (view.getId() == R.id.itemEdit && !b) {
+                        nameEdit.setVisibility(View.GONE);
+                        editCheck.setVisibility(View.GONE);
+                        editCancel.setVisibility(View.GONE);
+                        nameView.setVisibility(View.VISIBLE);
+                        boughtButton.setVisibility(View.VISIBLE);
+                        removeButton.setVisibility(View.VISIBLE);
+                        GroceryAdapter.this.setAddButtonVisibility(View.VISIBLE);
+                    }
+                }
+            });
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,7 +131,6 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
                     notifyDataSetChanged();
                 }
             });
-            boughtButton = view.findViewById(R.id.gotButton);
             boughtButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -94,6 +138,33 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
                     boughtButton.setChecked(isChecked);
                     Settings.setChecked(grocery, isChecked);
                     GroceryAdapter.this.informActivityItemsChecked();
+                }
+            });
+            editCheck.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    GroceryAdapter.this.modifyItem(grocery.getName(), nameEdit.getText().toString(), GroceryAdapter.this.fragment.getActivity());
+                    grocery.setName(nameEdit.getText().toString());
+                    nameEdit.setVisibility(View.GONE);
+                    editCheck.setVisibility(View.GONE);
+                    editCancel.setVisibility(View.GONE);
+                    nameView.setVisibility(View.VISIBLE);
+                    nameView.setText(grocery.getName());
+                    boughtButton.setVisibility(View.VISIBLE);
+                    removeButton.setVisibility(View.VISIBLE);
+                    GroceryAdapter.this.setAddButtonVisibility(View.VISIBLE);
+                }
+            });
+            editCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    nameEdit.setVisibility(View.GONE);
+                    editCheck.setVisibility(View.GONE);
+                    editCancel.setVisibility(View.GONE);
+                    nameView.setVisibility(View.VISIBLE);
+                    boughtButton.setVisibility(View.VISIBLE);
+                    removeButton.setVisibility(View.VISIBLE);
+                    GroceryAdapter.this.setAddButtonVisibility(View.VISIBLE);
                 }
             });
         }
