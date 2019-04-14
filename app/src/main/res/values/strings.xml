@@ -39,4 +39,8 @@
     <string name="suggestions_checked">Keep Checked</string>
     <string name="suggestions_reject">Reject All</string>
     <string name="edit_hint">enter an item name</string>
+    <string name="list_hint">enter a list name</string>
+    <string name="one_time">This is a one-time trip</string>
+    <string name="add_list">Add List</string>
+    <string name="cancel">Cancel</string>
 </resources>

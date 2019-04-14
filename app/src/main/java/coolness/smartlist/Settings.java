@@ -1,7 +1,6 @@
 package coolness.smartlist;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,14 +10,37 @@ import java.util.Scanner;
 
 public class Settings {
     private static int expirationWeeks = 6;
+    private static ArrayList<CurrentList> currentLists = new ArrayList<>();
+    private static String currentListName;
     private static ArrayList<ListItem> currentList = new ArrayList<>();
     private static ArrayList<PreviousItem> previousItems = new ArrayList<>();
     public static int getExpirationWeeks() { return expirationWeeks; }
     public static ArrayList<ListItem> getCurrentList() {
         return currentList;
     }
-    public static void setCurrentList(ArrayList<ListItem> groceries) {
-        currentList = groceries;
+    public static ArrayList<CurrentList> getCurrentLists() { return currentLists; }
+    public static void addCurrentList(CurrentList c) { currentLists.add(c); }
+    public static ArrayList<String> getCurrentListNames() {
+        ArrayList<String> tmp = new ArrayList<>();
+        tmp.add("first list");
+        for (CurrentList c : currentLists) {
+            tmp.add(c.getName());
+        }
+        tmp.add("add new list");
+        return tmp;
+    }
+    public static void setCurrentList(String listName) {
+        for (int i = 0; i < currentLists.size(); i++) {
+            if (currentLists.get(i).getName().equals(currentListName)) {
+                currentLists.get(i).setItems(currentList);
+            }
+        }
+        for (int i = 0; i < currentLists.size(); i++) {
+            if (currentLists.get(i).getName().equals(listName)) {
+                currentList = currentLists.get(i).getItems();
+                currentListName = listName;
+            }
+        }
     }
     public static void addToList(ListItem grocery) {
         currentList.add(grocery);
@@ -27,11 +49,11 @@ public class Settings {
         for (SuggestionItem s : suggestions) {
             addToList(new ListItem(s.getName()));
         }
-        writeCurrentList(activity);
+        writeCurrentLists(activity);
     }
     public static void removeFromList(ListItem grocery, Activity activity) {
         currentList.remove(grocery);
-        writeCurrentList(activity);
+        writeCurrentLists(activity);
     }
     public static boolean listContains(String grocery) {
         for (ListItem g : currentList) {
@@ -41,14 +63,14 @@ public class Settings {
         }
         return false;
     }
-    public static void updatePrevItems(String name, long today) {
+    public static void updatePrevItems(String name, long today, String listName) {
         for (PreviousItem p : previousItems) {
             if (p.getName().toLowerCase().equals(name)) {
                 p.addTimeBought(today);
                 return;
             }
         }
-        previousItems.add(new PreviousItem(name, today));
+        previousItems.add(new PreviousItem(name, today, listName));
     }
     public static void setChecked(ListItem g, boolean checked) {
         int index = currentList.indexOf(g);
@@ -57,12 +79,12 @@ public class Settings {
     public static void clearCheckedItems(Activity activity) {
         for (int i = currentList.size() - 1; i >= 0; i--) {
             if (currentList.get(i).isChecked()) {
-                updatePrevItems(currentList.get(i).getName(), new Date().getTime());
+                updatePrevItems(currentList.get(i).getName(), new Date().getTime(), currentListName);
                 currentList.remove(i);
             }
         }
         writePreviousItems(activity);
-        writeCurrentList(activity);
+        writeCurrentLists(activity);
     }
     public static void modifyListItem(String oldName, String newName, Activity activity) {
         for (int i = 0; i < currentList.size(); i++) {
@@ -71,7 +93,7 @@ public class Settings {
                 break;
             }
         }
-        writeCurrentList(activity);
+        writeCurrentLists(activity);
     }
     public static ArrayList<PreviousItem> getPreviousItems() { return previousItems; }
     public static void removeFromPreviousItems(PreviousItem item, Activity activity) {
@@ -104,6 +126,7 @@ public class Settings {
             while (scanner.hasNext()) {
                 PreviousItem tmp = new PreviousItem();
                 tmp.setName(scanner.next());
+                tmp.setListName(scanner.next());
                 tmp.setMillisSinceAdded(scanner.nextLong());
                 tmp.setNumTimesBought(scanner.nextInt());
                 tmp.setLastSuggested(scanner.nextLong());
@@ -115,16 +138,26 @@ public class Settings {
             e.printStackTrace();
         }
     }
-    public static void readCurrentList(Activity activity) {
+
+    //TODO: need to redo this
+    public static void readCurrentLists(Activity activity) {
         File file = new File(activity.getFilesDir(), "currList.txt");
         try {
             Scanner scanner = new Scanner(file);
             scanner.useDelimiter(",");
             while (scanner.hasNext()) {
-                ListItem tmp = new ListItem();
-                tmp.setName(scanner.next());
-                tmp.setChecked(scanner.next().equals("y"));
-                currentList.add(tmp);
+                CurrentList tmpList = new CurrentList(scanner.next());
+                tmpList.setCurrent(scanner.next().equals("y"));
+                int listSize = scanner.nextInt();
+                ArrayList<ListItem> tmpItems = new ArrayList<>();
+                for (int i = 0; i < listSize; i++) {
+                    ListItem tmp = new ListItem();
+                    tmp.setName(scanner.next());
+                    tmp.setChecked(scanner.next().equals("y"));
+                    tmpItems.add(tmp);
+                }
+                tmpList.setItems(tmpItems);
+                currentLists.add(tmpList);
             }
         } catch (Exception e) {
 
@@ -141,12 +174,12 @@ public class Settings {
             e.printStackTrace();
         }
     }
-    public static void writeCurrentList(Activity activity) {
+    public static void writeCurrentLists(Activity activity) {
         File file = new File(activity.getFilesDir(), "currList.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
-            String currList = stringifyCurrList();
-            fileWriter.write(currList);
+            String currLists = stringifyCurrLists();
+            fileWriter.write(currLists);
             fileWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,25 +188,30 @@ public class Settings {
     private static String stringifyPrevItems() {
         StringBuilder sb = new StringBuilder();
         for (PreviousItem p : previousItems) {
-            String currLine = p.getName() + "," + p.getMillisSinceAdded() + "," + p.getNumTimesBought() + "," + p.getLastSuggested() + "," + p.getNextSuggestion() + "," + p.getLastBought() + ",";
+            String currLine = p.getName() + "," + p.getListName() + "," + p.getMillisSinceAdded() + "," + p.getNumTimesBought() + "," + p.getLastSuggested() + "," + p.getNextSuggestion() + "," + p.getLastBought() + ",";
             sb.append(currLine);
         }
         return sb.toString();
     }
-    private static String stringifyCurrList() {
+
+    private static String stringifyCurrLists() {
         StringBuilder sb = new StringBuilder();
-        for (ListItem g : currentList) {
-            String currLine = g.getName() + "," + (g.isChecked() ? "y" : "n") + ",";
-            sb.append(currLine);
+        for (CurrentList c : currentLists) {
+            sb.append(c.getInfoStringify());
+            for (ListItem g : c.getItems()) {
+                String currLine = g.getName() + "," + (g.isChecked() ? "y," : "n,");
+                sb.append(currLine);
+            }
         }
         return sb.toString();
     }
+
     public static void initialize(Activity activity) {
-        readCurrentList(activity);
+        readCurrentLists(activity);
         readPreviousItems(activity);
     }
     public static void closeProgram(Activity activity) {
-        writeCurrentList(activity);
+        writeCurrentLists(activity);
         writePreviousItems(activity);
     }
     public static boolean isInitialized() {

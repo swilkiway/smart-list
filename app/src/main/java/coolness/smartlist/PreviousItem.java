@@ -1,10 +1,10 @@
 package coolness.smartlist;
 
-//autocheck suggestions
 public class PreviousItem {
     public PreviousItem() {}
-    public PreviousItem(String name, long today) {
+    public PreviousItem(String name, long today, String listName) {
         this.name = name;
+        this.listName = listName;
         numTimesBought = 1;
         millisSinceAdded = today;
         lastSuggested = today;
@@ -17,6 +17,7 @@ public class PreviousItem {
     private long lastSuggested;
     private long lastBought;
     private int nextSuggestion;
+    private String listName;
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public long getMillisSinceAdded() { return millisSinceAdded; }
@@ -33,6 +34,8 @@ public class PreviousItem {
         lastBought = today;
         updateSuggestion(today);
     }
+    public String getListName() { return listName; }
+    public void setListName(String listName) { this.listName = listName; }
     public long getLastSuggested() { return lastSuggested; }
     public void setLastSuggested(long suggested) {
         lastSuggested = suggested;

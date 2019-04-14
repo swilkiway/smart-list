@@ -14,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,10 @@ public class CurrListFragment extends Fragment {
     private EditText newItem;
     private String newItemName = "";
     private Button doneShopping;
+    private TextView listNameView;
+    private Button deleteList;
+    private Button listsButton;
+    private Spinner switchLists;
     private GroceryAdapter groceryAdapter;
 
     @Override
@@ -95,6 +102,35 @@ public class CurrListFragment extends Fragment {
         if (groceryAdapter.anyItemsChecked()) {
             doneShopping.setEnabled(true);
         }
+        switchLists = view.findViewById(R.id.switchLists);
+        updateLists();
+        switchLists.setSelection(0);
+        switchLists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String switchName = adapterView.getItemAtPosition(i).toString();
+                if (!switchName.equals("add new list")) {
+                    Settings.setCurrentList(switchName);
+                    groceryAdapter.notifyDataSetChanged();
+                } else {
+                    NameListDialog cd = new NameListDialog();
+                    cd.setCancelable(false);
+                    cd.show(getActivity().getSupportFragmentManager(), "example");
+                }
+                switchLists.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        listsButton = view.findViewById(R.id.listsButton);
+        listsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchLists.performClick();
+            }
+        });
     }
 
     public void anyItemsChecked(boolean checked) {
@@ -107,6 +143,13 @@ public class CurrListFragment extends Fragment {
 
     public void setAddButtonVisibility(int visibility) {
         addItem.setVisibility(visibility);
+    }
+
+    public void updateLists() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_item, Settings.getCurrentListNames());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        switchLists.setAdapter(adapter);
     }
 
     public void hideKeyboard() {
@@ -131,7 +174,7 @@ public class CurrListFragment extends Fragment {
             handled = true;
             newItem.setVisibility(View.GONE);
             hideKeyboard();
-            Settings.writeCurrentList(CurrListFragment.this.getActivity());
+            Settings.writeCurrentLists(CurrListFragment.this.getActivity());
         }
         return handled;
     }
