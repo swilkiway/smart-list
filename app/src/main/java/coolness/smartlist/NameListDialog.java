@@ -51,14 +51,15 @@ public class NameListDialog extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Settings.addCurrentList(new CurrentList(nameView.getText().toString()));
+                NameListDialog.this.dismiss();
             }
         });
         cancelButton = view.findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                NameListDialog.this.dismiss();
             }
         });
 
@@ -67,7 +68,7 @@ public class NameListDialog extends DialogFragment {
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         builder.setContentView(view);
-        builder.setCanceledOnTouchOutside(false);
+        //builder.setCanceledOnTouchOutside(false);
         return builder;
     }
 }

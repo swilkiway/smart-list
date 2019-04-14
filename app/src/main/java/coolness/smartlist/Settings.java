@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class Settings {
     private static int expirationWeeks = 6;
+    private static UpdateManager updateManager;
     private static ArrayList<CurrentList> currentLists = new ArrayList<>();
     private static String currentListName;
     private static ArrayList<ListItem> currentList = new ArrayList<>();
@@ -19,10 +20,14 @@ public class Settings {
         return currentList;
     }
     public static ArrayList<CurrentList> getCurrentLists() { return currentLists; }
-    public static void addCurrentList(CurrentList c) { currentLists.add(c); }
+    public static void addCurrentList(CurrentList c) {
+        currentLists.add(c);
+        currentList = new ArrayList<>();
+        currentListName = c.getName();
+        updateManager.newListCreated();
+    }
     public static ArrayList<String> getCurrentListNames() {
         ArrayList<String> tmp = new ArrayList<>();
-        tmp.add("first list");
         for (CurrentList c : currentLists) {
             tmp.add(c.getName());
         }
@@ -41,6 +46,7 @@ public class Settings {
                 currentListName = listName;
             }
         }
+        updateManager.listSwitched(listName);
     }
     public static void addToList(ListItem grocery) {
         currentList.add(grocery);
@@ -209,6 +215,9 @@ public class Settings {
     public static void initialize(Activity activity) {
         readCurrentLists(activity);
         readPreviousItems(activity);
+    }
+    public static void initializeUpdateManager(CurrListFragment fragment) {
+        updateManager = new UpdateManager(fragment);
     }
     public static void closeProgram(Activity activity) {
         writeCurrentLists(activity);

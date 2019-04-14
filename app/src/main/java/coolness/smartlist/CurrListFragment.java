@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class CurrListFragment extends Fragment {
 
     private Button addItem;
@@ -32,7 +34,9 @@ public class CurrListFragment extends Fragment {
     private Button deleteList;
     private Button listsButton;
     private Spinner switchLists;
+    private RecyclerView groceryList;
     private GroceryAdapter groceryAdapter;
+    private ArrayAdapter<String> spinnerAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +45,7 @@ public class CurrListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        RecyclerView groceryList = view.findViewById(R.id.groceryList);
+        groceryList = view.findViewById(R.id.groceryList);
         RecyclerView.LayoutManager groceryManager = new LinearLayoutManager(getContext());
         groceryList.setLayoutManager(groceryManager);
         if (Settings.getCurrentList() != null) {
@@ -114,7 +118,7 @@ public class CurrListFragment extends Fragment {
                     groceryAdapter.notifyDataSetChanged();
                 } else {
                     NameListDialog cd = new NameListDialog();
-                    cd.setCancelable(false);
+                    //cd.setCancelable(false);
                     cd.show(getActivity().getSupportFragmentManager(), "example");
                 }
                 switchLists.setVisibility(View.INVISIBLE);
@@ -131,6 +135,7 @@ public class CurrListFragment extends Fragment {
                 switchLists.performClick();
             }
         });
+        Settings.initializeUpdateManager(this);
     }
 
     public void anyItemsChecked(boolean checked) {
@@ -146,10 +151,22 @@ public class CurrListFragment extends Fragment {
     }
 
     public void updateLists() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, Settings.getCurrentListNames());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        switchLists.setAdapter(adapter);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        switchLists.setAdapter(spinnerAdapter);
+    }
+
+    public void switchLists(String listName) {
+        if (Settings.getCurrentList() != null) {
+            groceryAdapter = new GroceryAdapter(this, Settings.getCurrentList());
+        } else {
+            groceryAdapter = new GroceryAdapter(this);
+        }
+        groceryList.setAdapter(groceryAdapter);
+        int position = spinnerAdapter.getPosition(listName);
+        switchLists.setSelection(position);
+        doneShopping.setEnabled(groceryAdapter.anyItemsChecked());
     }
 
     public void hideKeyboard() {
