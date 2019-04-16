@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Switch;
+import coolness.smartlist.Constants;
+import coolness.smartlist.R;
 
 public class SettingsFragment extends Fragment {
 

@@ -1,14 +1,18 @@
 package coolness.smartlist;
 
 import android.app.Activity;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+import coolness.smartlist.fragment.CurrListFragment;
+import coolness.smartlist.model.CurrentList;
+import coolness.smartlist.model.ListItem;
+import coolness.smartlist.model.PreviousItem;
+import coolness.smartlist.model.SuggestionItem;
 
-public class Settings {
+public class ListManager {
     private static int expirationWeeks = 6;
     private static UpdateManager updateManager;
     private static ArrayList<CurrentList> currentLists = new ArrayList<>();
@@ -20,7 +24,6 @@ public class Settings {
     public static ArrayList<ListItem> getCurrentList() {
         return currentList;
     }
-    public static ArrayList<CurrentList> getCurrentLists() { return currentLists; }
     public static void setCurrentListName(String listName, Activity activity) {
         for (CurrentList c : currentLists) {
             if (c.getName().equals(currentListName)) {
@@ -71,8 +74,9 @@ public class Settings {
         }
         updateManager.listSwitched(listName);
     }
-    public static void addToList(ListItem grocery) {
+    public static void addToList(ListItem grocery, Activity activity) {
         currentList.add(grocery);
+        writeCurrentLists(activity);
     }
     public static void addToLists(ArrayList<SuggestionItem> suggestions, Activity activity) {
         for (SuggestionItem s : suggestions) {
@@ -98,7 +102,7 @@ public class Settings {
         }
         return false;
     }
-    public static void updatePrevItems(String name, long today, String listName) {
+    private static void updatePrevItems(String name, long today, String listName) {
         for (PreviousItem p : previousItems) {
             if (p.getName().toLowerCase().equals(name)) {
                 p.addTimeBought(today);
@@ -153,7 +157,7 @@ public class Settings {
         }
         return (suggestions.size() > 0 ? suggestions : null);
     }
-    public static int findCurrentList() {
+    private static int findCurrentList() {
         for (int i = 0; i < currentLists.size(); i++) {
             if (currentLists.get(i).isCurrentList()) {
                 return i;
@@ -185,7 +189,7 @@ public class Settings {
         writeCurrentLists(activity);
         writePreviousItems(activity);
     }
-    public static void readPreviousItems(Activity activity) {
+    private static void readPreviousItems(Activity activity) {
         File file = new File(activity.getFilesDir(), "prevItems.txt");
         try {
             Scanner scanner = new Scanner(file);
@@ -206,8 +210,7 @@ public class Settings {
         }
     }
 
-    //TODO: need to redo this
-    public static void readCurrentLists(Activity activity) {
+    private static void readCurrentLists(Activity activity) {
         File file = new File(activity.getFilesDir(), "currList.txt");
         try {
             Scanner scanner = new Scanner(file);
@@ -227,10 +230,10 @@ public class Settings {
                 currentLists.add(tmpList);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
-    public static void writePreviousItems(Activity activity) {
+    private static void writePreviousItems(Activity activity) {
         File file = new File(activity.getFilesDir(), "prevItems.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -241,7 +244,7 @@ public class Settings {
             e.printStackTrace();
         }
     }
-    public static void writeCurrentLists(Activity activity) {
+    private static void writeCurrentLists(Activity activity) {
         File file = new File(activity.getFilesDir(), "currList.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -292,10 +295,7 @@ public class Settings {
     public static void initializeUpdateManager(CurrListFragment fragment) {
         updateManager = new UpdateManager(fragment);
     }
-    public static void closeProgram(Activity activity) {
-        writeCurrentLists(activity);
-        writePreviousItems(activity);
-    }
+
     public static boolean isInitialized() {
         return (!currentList.isEmpty() || !previousItems.isEmpty());
     }

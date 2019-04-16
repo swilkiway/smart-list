@@ -14,6 +14,12 @@ import android.view.MenuItem;
 
 import java.util.Date;
 
+import coolness.smartlist.fragment.CurrListFragment;
+import coolness.smartlist.fragment.HelpFragment;
+import coolness.smartlist.fragment.ItemsFragment;
+import coolness.smartlist.fragment.SettingsFragment;
+import coolness.smartlist.fragment.SuggestionFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -22,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!Settings.isInitialized()) {
-            Settings.initialize(this);
+        if (!ListManager.isInitialized()) {
+            ListManager.initialize(this);
         }
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navView = findViewById(R.id.nav_view);
@@ -37,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getTitle().toString()) {
                             case "Previous Items":
                                 fragment = new ItemsFragment(); break;
-                            case "Settings":
+                            case "ListManager":
                                 fragment = new SettingsFragment(); break;
                             case "Help":
                                 fragment = new HelpFragment(); break;
@@ -55,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         Fragment fragment;
-        if (Settings.getSuggestions(new Date().getTime()) != null) {
+        if (ListManager.getSuggestions(new Date().getTime()) != null) {
             fragment = new SuggestionFragment();
         } else {
             fragment = new CurrListFragment();

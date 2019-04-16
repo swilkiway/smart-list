@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.model;
 
 public class SuggestionItem {
     private String name;
@@ -14,13 +14,11 @@ public class SuggestionItem {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public int getWeeksSinceBought() { return weeksSinceBought; }
-    public void setWeeksSinceBought(long today) { weeksSinceBought = (int)(today / 604800000L); }
     public boolean isChecked() { return checked; }
     public void setChecked(boolean checked) { this.checked = checked; }
     public boolean switchChecked() {
         checked = !checked;
         return checked;
     }
-    public void setListName(String listName) { this.listName = listName; }
     public String getListName() { return listName; }
 }

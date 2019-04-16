@@ -1,4 +1,7 @@
-package coolness.smartlist;
+package coolness.smartlist.model;
+
+import coolness.smartlist.Constants;
+import coolness.smartlist.ListManager;
 
 public class PreviousItem {
     public PreviousItem() {}
@@ -22,8 +25,8 @@ public class PreviousItem {
     public void setName(String name) { this.name = name; }
     public long getMillisSinceAdded() { return millisSinceAdded; }
     public void setMillisSinceAdded(long day) { millisSinceAdded = day; }
-    public int getDaysSinceAdded(long today) { return (int)((today - millisSinceAdded)/Constants.millisOneDay); }
-    public int getDaysSinceSuggested(long today) { return (int)((today - lastSuggested + Constants.millisEightHours)/Constants.millisOneDay); }
+    private int getDaysSinceAdded(long today) { return (int)((today - millisSinceAdded)/Constants.millisOneDay); }
+    private int getDaysSinceSuggested(long today) { return (int)((today - lastSuggested + Constants.millisEightHours)/Constants.millisOneDay); }
     public int getWeeksSinceBought(long today) { return (int)((today - lastBought)/Constants.millisOneWeek) + 1; }
     public int getNumTimesBought() { return numTimesBought; }
     public void setNumTimesBought(int num) { numTimesBought = num; }
@@ -45,7 +48,7 @@ public class PreviousItem {
     public void setNextSuggestion(int suggestion) { nextSuggestion = suggestion; }
     public int getFrequency(long today) { return getDaysSinceAdded(today) / numTimesBought; }
     public boolean shouldBeSuggested(long today) {
-        if (!Settings.listContains(name)) {
+        if (!ListManager.listContains(name)) {
             return (getDaysSinceSuggested(today) >= nextSuggestion);
         } else {
             return false;
@@ -53,10 +56,10 @@ public class PreviousItem {
     }
 
     public boolean hasExpired(long today) {
-        return ((today - lastBought) > (604800000L * Settings.getExpirationWeeks()));
+        return ((today - lastBought) > (604800000L * ListManager.getExpirationWeeks()));
     }
 
-    public void updateSuggestion(long today) {
+    private void updateSuggestion(long today) {
         lastSuggested = today;
         nextSuggestion = getFrequency(today);
     }

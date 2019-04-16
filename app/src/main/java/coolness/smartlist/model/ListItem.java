@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.model;
 
 public class ListItem {
     public ListItem() {}

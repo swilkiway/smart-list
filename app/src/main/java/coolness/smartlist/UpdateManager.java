@@ -1,12 +1,12 @@
 package coolness.smartlist;
 
+import coolness.smartlist.fragment.CurrListFragment;
+
 public class UpdateManager {
     public UpdateManager(CurrListFragment fragment) {
         currList = fragment;
     }
     private CurrListFragment currList;
-    public void registerCurrList(CurrListFragment c) { currList = c; }
-    public CurrListFragment getCurrList() { return currList; }
     public void listsChanged() {
         currList.updateLists();
     }
