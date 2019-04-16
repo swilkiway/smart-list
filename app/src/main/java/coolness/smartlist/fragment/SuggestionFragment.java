@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +14,12 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.Date;
 
+import coolness.smartlist.ListManager;
+import coolness.smartlist.R;
+import coolness.smartlist.model.SuggestionItem;
+import coolness.smartlist.adapter.SuggestionAdapter;
+
 public class SuggestionFragment extends Fragment {
-    private long today;
     private Button keepItems;
     private Button rejectAll;
     private SuggestionAdapter suggestionAdapter;
@@ -30,8 +34,8 @@ public class SuggestionFragment extends Fragment {
         RecyclerView suggestionList = view.findViewById(R.id.suggestionList);
         RecyclerView.LayoutManager suggestionManager = new LinearLayoutManager(getContext());
         suggestionList.setLayoutManager(suggestionManager);
-        today = new Date().getTime();
-        ArrayList<SuggestionItem> suggestions = Settings.getSuggestions(today);
+        long today = new Date().getTime();
+        ArrayList<SuggestionItem> suggestions = ListManager.getSuggestions(today);
         if (suggestions != null) {
             suggestionAdapter = new SuggestionAdapter(this, suggestions);
         } else {
@@ -42,7 +46,7 @@ public class SuggestionFragment extends Fragment {
         keepItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Settings.addToLists(suggestionAdapter.getCheckedItems(), getActivity());
+                ListManager.addToLists(suggestionAdapter.getCheckedItems(), getActivity());
                 Fragment fragment = new CurrListFragment();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();

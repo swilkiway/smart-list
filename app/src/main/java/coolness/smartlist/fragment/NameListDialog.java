@@ -1,12 +1,11 @@
-package coolness.smartlist;
+package coolness.smartlist.fragment;
 
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -14,6 +13,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import coolness.smartlist.R;
+import coolness.smartlist.ListManager;
+import coolness.smartlist.model.CurrentList;
 
 public class NameListDialog extends DialogFragment {
 
@@ -28,6 +30,7 @@ public class NameListDialog extends DialogFragment {
     }
 
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_name_list, new ConstraintLayout(getActivity()), false);
         nameView = view.findViewById(R.id.nameView);
@@ -51,7 +54,7 @@ public class NameListDialog extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Settings.addCurrentList(new CurrentList(nameView.getText().toString()), getActivity());
+                ListManager.addCurrentList(new CurrentList(nameView.getText().toString()), getActivity());
                 NameListDialog.this.dismiss();
             }
         });

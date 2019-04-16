@@ -1,18 +1,20 @@
-package coolness.smartlist;
+package coolness.smartlist.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import coolness.smartlist.ListManager;
+import coolness.smartlist.model.PreviousItem;
+import coolness.smartlist.R;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder> {
     private ArrayList<PreviousItem> items;
@@ -33,7 +35,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
     }
     @Override
     public void onBindViewHolder(@NonNull ItemsAdapter.ItemsHolder holder, int position) {
-        holder.bind(items.get(position), position);
+        holder.bind(items.get(position));
     }
 
     @Override
@@ -45,8 +47,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
         }
     }
 
-    public void removeItem(PreviousItem item, Activity activity) {
-        Settings.removeFromPreviousItems(item, activity);
+    private void removeItem(PreviousItem item, Activity activity) {
+        ListManager.removeFromPreviousItems(item, activity);
         notifyDataSetChanged();
     }
 
@@ -70,7 +72,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
                 }
             });
         }
-        void bind(PreviousItem g, int position) {
+        void bind(PreviousItem g) {
             grocery = g;
             nameView.setText(g.getName());
             listView.setText(g.getListName());

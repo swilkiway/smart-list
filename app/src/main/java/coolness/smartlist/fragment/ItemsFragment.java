@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.fragment;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import coolness.smartlist.R;
+import coolness.smartlist.ListManager;
+import coolness.smartlist.adapter.ItemsAdapter;
 
 public class ItemsFragment extends Fragment {
 
@@ -21,9 +24,9 @@ public class ItemsFragment extends Fragment {
         RecyclerView itemsList = view.findViewById(R.id.itemsList);
         RecyclerView.LayoutManager itemsManager = new LinearLayoutManager(getContext());
         itemsList.setLayoutManager(itemsManager);
-        final ItemsAdapter itemsAdapter;
-        if (Settings.getPreviousItems() != null) {
-            itemsAdapter = new ItemsAdapter(getActivity(), Settings.getPreviousItems());
+        ItemsAdapter itemsAdapter;
+        if (ListManager.getPreviousItems() != null) {
+            itemsAdapter = new ItemsAdapter(getActivity(), ListManager.getPreviousItems());
         } else {
             itemsAdapter = new ItemsAdapter(getActivity());
         }

@@ -1,4 +1,4 @@
-package coolness.smartlist;
+package coolness.smartlist.fragment;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -21,6 +21,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import coolness.smartlist.ListManager;
+import coolness.smartlist.adapter.GroceryAdapter;
+import coolness.smartlist.model.ListItem;
+import coolness.smartlist.R;
 
 public class CurrListFragment extends Fragment {
 
@@ -53,8 +58,8 @@ public class CurrListFragment extends Fragment {
         groceryList = view.findViewById(R.id.groceryList);
         RecyclerView.LayoutManager groceryManager = new LinearLayoutManager(getContext());
         groceryList.setLayoutManager(groceryManager);
-        if (Settings.getCurrentList() != null) {
-            groceryAdapter = new GroceryAdapter(this, Settings.getCurrentList());
+        if (ListManager.getCurrentList() != null) {
+            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList());
         } else {
             groceryAdapter = new GroceryAdapter(this);
         }
@@ -92,17 +97,10 @@ public class CurrListFragment extends Fragment {
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newItem.getVisibility() == View.VISIBLE) {
-                    onItemAdded();
-                } else {
-                    addItem.setVisibility(View.GONE);
-                    newItem.setVisibility(View.VISIBLE);
-                    newItemCancel.setVisibility(View.VISIBLE);
-                    newItemCheck.setVisibility(View.VISIBLE);
-                    newItem.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                }
+                itemEditModeOn();
+                newItem.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
         newItemCheck.setOnClickListener(new View.OnClickListener() {
@@ -114,10 +112,7 @@ public class CurrListFragment extends Fragment {
         newItemCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newItem.setVisibility(View.GONE);
-                newItemCheck.setVisibility(View.GONE);
-                newItemCancel.setVisibility(View.GONE);
-                addItem.setVisibility(View.VISIBLE);
+                itemEditModeOff();
             }
         });
         doneShopping = view.findViewById(R.id.doneShopping);
@@ -141,7 +136,7 @@ public class CurrListFragment extends Fragment {
                 if (!justEditedName) {
                     String switchName = adapterView.getItemAtPosition(i).toString();
                     if (!switchName.equals("add new list")) {
-                        Settings.setCurrentList(switchName);
+                        ListManager.setCurrentList(switchName);
                         groceryAdapter.notifyDataSetChanged();
                     } else {
                         justEditedName = true;
@@ -169,31 +164,18 @@ public class CurrListFragment extends Fragment {
         listNameEdit = view.findViewById(R.id.listNameEdit);
         listNameView = view.findViewById(R.id.listNameView);
         deleteList = view.findViewById(R.id.listDelete);
-        listNameView.setText(Settings.getCurrentListName());
+        listNameView.setText(ListManager.getCurrentListName());
         listNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listNameView.setVisibility(View.INVISIBLE);
-                deleteList.setVisibility(View.INVISIBLE);
-                addItem.setVisibility(View.INVISIBLE);
-                lineView.setVisibility(View.INVISIBLE);
-                listNameEdit.setVisibility(View.VISIBLE);
-                listNameEdit.setText(Settings.getCurrentListName());
-                listNameCancel.setVisibility(View.VISIBLE);
-                listNameCheck.setVisibility(View.VISIBLE);
+                listEditModeOn();
             }
         });
         listNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (view.getId() == R.id.itemEdit && !b) {
-                    listNameEdit.setVisibility(View.GONE);
-                    listNameCheck.setVisibility(View.GONE);
-                    listNameCancel.setVisibility(View.GONE);
-                    lineView.setVisibility(View.VISIBLE);
-                    listNameView.setVisibility(View.VISIBLE);
-                    deleteList.setVisibility(View.VISIBLE);
-                    addItem.setVisibility(View.VISIBLE);
+                    listEditModeOff();
                 }
             }
         });
@@ -206,22 +188,16 @@ public class CurrListFragment extends Fragment {
         listNameCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listNameEdit.setVisibility(View.GONE);
-                listNameCheck.setVisibility(View.GONE);
-                listNameCancel.setVisibility(View.GONE);
-                listNameView.setVisibility(View.VISIBLE);
-                deleteList.setVisibility(View.VISIBLE);
-                addItem.setVisibility(View.VISIBLE);
-                lineView.setVisibility(View.VISIBLE);
+                listEditModeOff();
             }
         });
         deleteList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Settings.deleteCurrentList(getActivity());
+                ListManager.deleteCurrentList(getActivity());
             }
         });
-        Settings.initializeUpdateManager(this);
+        ListManager.initializeUpdateManager(this);
     }
 
     public void anyItemsChecked(boolean checked) {
@@ -238,14 +214,14 @@ public class CurrListFragment extends Fragment {
 
     public void updateLists() {
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_item, Settings.getCurrentListNames());
+                android.R.layout.simple_spinner_item, ListManager.getCurrentListNames());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         switchLists.setAdapter(spinnerAdapter);
     }
 
     public void switchLists(String listName) {
-        if (Settings.getCurrentList() != null) {
-            groceryAdapter = new GroceryAdapter(this, Settings.getCurrentList());
+        if (ListManager.getCurrentList() != null) {
+            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList());
         } else {
             groceryAdapter = new GroceryAdapter(this);
         }
@@ -265,23 +241,55 @@ public class CurrListFragment extends Fragment {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public void listEditModeOn() {
+        listNameView.setVisibility(View.INVISIBLE);
+        deleteList.setVisibility(View.INVISIBLE);
+        addItem.setVisibility(View.INVISIBLE);
+        lineView.setVisibility(View.INVISIBLE);
+        listNameEdit.setVisibility(View.VISIBLE);
+        listNameEdit.setText(ListManager.getCurrentListName());
+        listNameCancel.setVisibility(View.VISIBLE);
+        listNameCheck.setVisibility(View.VISIBLE);
+    }
+
+    public void listEditModeOff() {
+        listNameEdit.setVisibility(View.GONE);
+        listNameCheck.setVisibility(View.GONE);
+        listNameCancel.setVisibility(View.GONE);
+        listNameView.setVisibility(View.VISIBLE);
+        deleteList.setVisibility(View.VISIBLE);
+        addItem.setVisibility(View.VISIBLE);
+        lineView.setVisibility(View.VISIBLE);
+    }
+
+    public void itemEditModeOn() {
+        addItem.setVisibility(View.GONE);
+        newItem.setVisibility(View.VISIBLE);
+        newItemCancel.setVisibility(View.VISIBLE);
+        newItemCheck.setVisibility(View.VISIBLE);
+    }
+
+    public void itemEditModeOff() {
+        newItem.setVisibility(View.GONE);
+        newItemCheck.setVisibility(View.GONE);
+        newItemCancel.setVisibility(View.GONE);
+        addItem.setVisibility(View.VISIBLE);
+    }
+
     public boolean onItemAdded() {
         boolean handled = false;
         if (newItemName.equals("")) {
             Toast.makeText(CurrListFragment.this.getContext(), "Please enter an item name", Toast.LENGTH_SHORT).show();
-        } else if (Settings.listContains(newItemName)) {
+        } else if (ListManager.listContains(newItemName)) {
             Toast.makeText(CurrListFragment.this.getContext(), "That's already on your list", Toast.LENGTH_SHORT).show();
         } else {
             ListItem newGrocery = new ListItem(newItemName);
             groceryAdapter.addItem(newGrocery);
             newItem.setText("");
             handled = true;
-            newItem.setVisibility(View.GONE);
-            newItemCheck.setVisibility(View.GONE);
-            newItemCancel.setVisibility(View.GONE);
-            addItem.setVisibility(View.VISIBLE);
+            itemEditModeOff();
             hideKeyboard();
-            Settings.writeCurrentLists(CurrListFragment.this.getActivity());
+            ListManager.writeCurrentLists(CurrListFragment.this.getActivity());
         }
         return handled;
     }
@@ -290,12 +298,12 @@ public class CurrListFragment extends Fragment {
         String name = listNameEdit.getText().toString();
         if (name.equals("")) {
             Toast.makeText(CurrListFragment.this.getContext(), "Please enter a list name", Toast.LENGTH_SHORT).show();
-        } else if (Settings.alreadyUsedListName(name)) {
+        } else if (ListManager.alreadyUsedListName(name)) {
             Toast.makeText(CurrListFragment.this.getContext(), "You already have a list named that", Toast.LENGTH_SHORT).show();
         } else {
             justEditedName = true;
             String newName = listNameEdit.getText().toString();
-            Settings.setCurrentListName(newName, getActivity());
+            ListManager.setCurrentListName(newName, getActivity());
             listNameEdit.setVisibility(View.GONE);
             listNameCheck.setVisibility(View.GONE);
             listNameCancel.setVisibility(View.GONE);

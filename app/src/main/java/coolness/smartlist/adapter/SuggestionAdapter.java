@@ -1,15 +1,16 @@
-package coolness.smartlist;
+package coolness.smartlist.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-
 import java.util.ArrayList;
+import coolness.smartlist.R;
+import coolness.smartlist.fragment.SuggestionFragment;
+import coolness.smartlist.model.SuggestionItem;
 
 public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.SuggestionHolder> {
     private ArrayList<SuggestionItem> suggestions;
@@ -34,7 +35,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
 
     @Override
     public void onBindViewHolder(@NonNull SuggestionAdapter.SuggestionHolder holder, int position) {
-        holder.bind(suggestions.get(position), position);
+        holder.bind(suggestions.get(position));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
         return tmp;
     }
 
-    public boolean anyItemsChecked() {
+    private boolean anyItemsChecked() {
         for (SuggestionItem g : suggestions) {
             if (g.isChecked()) {
                 return true;
@@ -65,7 +66,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
         return false;
     }
 
-    public void informActivityItemsChecked() {
+    private void informActivityItemsChecked() {
         fragment.anyItemsChecked(anyItemsChecked());
     }
 
@@ -92,7 +93,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
             });
         }
 
-        void bind(SuggestionItem s, int position) {
+        void bind(SuggestionItem s) {
             suggestion = s;
             wantButton.setChecked(suggestion.isChecked());
             nameView.setText(s.getName());
