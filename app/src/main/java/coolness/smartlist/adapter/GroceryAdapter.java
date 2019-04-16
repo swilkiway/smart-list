@@ -55,7 +55,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
     }
 
     public void addItem(ListItem item) {
-        ListManager.addToList(item);
+        ListManager.addToList(item, fragment.getActivity());
         notifyDataSetChanged();
     }
 

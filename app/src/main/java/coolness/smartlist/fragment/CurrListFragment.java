@@ -289,7 +289,6 @@ public class CurrListFragment extends Fragment {
             handled = true;
             itemEditModeOff();
             hideKeyboard();
-            ListManager.writeCurrentLists(CurrListFragment.this.getActivity());
         }
         return handled;
     }

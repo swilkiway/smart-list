@@ -74,8 +74,9 @@ public class ListManager {
         }
         updateManager.listSwitched(listName);
     }
-    public static void addToList(ListItem grocery) {
+    public static void addToList(ListItem grocery, Activity activity) {
         currentList.add(grocery);
+        writeCurrentLists(activity);
     }
     public static void addToLists(ArrayList<SuggestionItem> suggestions, Activity activity) {
         for (SuggestionItem s : suggestions) {
