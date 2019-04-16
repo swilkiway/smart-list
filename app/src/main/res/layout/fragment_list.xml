@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".CurrListFragment">
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/leftSideGuideline"
-        app:layout_constraintGuide_percent=".05"/>
+        app:layout_constraintGuide_percent=".08"/>
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,14 +23,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listNameView"
-        android:textSize="16pt"
+        android:textSize="15pt"
         app:layout_constraintStart_toStartOf="@id/leftSideGuideline"/>
     <Button
-        android:layout_width="34dp"
-        android:layout_height="34dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/listDelete"
         android:background="@drawable/ic_delete_black_24dp"
-        app:layout_constraintStart_toStartOf="@id/listNameView"/>
+        app:layout_constraintStart_toEndOf="@id/listNameView"
+        app:layout_constraintTop_toTopOf="@id/listNameView"
+        app:layout_constraintBottom_toBottomOf="@id/listNameView"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listNameEdit"
+        android:textSize="10pt"
+        android:hint="@string/edit_hint"
+        android:visibility="gone"
+        android:inputType="text"
+        android:padding="-1dp"
+        app:layout_constraintStart_toStartOf="@id/leftSideGuideline" />
+    <Button
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:id="@+id/listNameCheck"
+        android:background="@drawable/ic_check_55b944_24dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/leftSideGuideline"
+        app:layout_constraintTop_toTopOf="@id/listNameEdit"
+        app:layout_constraintBottom_toBottomOf="@id/listNameEdit"/>
+    <Button
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:id="@+id/listNameCancel"
+        android:background="@drawable/ic_cancel_b9140b_24dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/listNameEdit"
+        app:layout_constraintTop_toTopOf="@id/listNameEdit"
+        app:layout_constraintBottom_toBottomOf="@id/listNameEdit"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#000000"
+        android:id="@+id/lineView"
+        app:layout_constraintTop_toBottomOf="@id/listNameView"
+        app:layout_constraintStart_toStartOf="@id/listNameView"
+        app:layout_constraintEnd_toEndOf="@id/listDelete"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,24 +95,40 @@
         app:layout_constraintTop_toBottomOf="@id/listNameView"
         app:layout_constraintHeight_max="455dp"
         app:layout_constrainedHeight="true"/>
-    <LinearLayout
+    <Button
+        android:id="@+id/addItem"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_add_black_24dp"
+        app:layout_constraintTop_toBottomOf="@id/groceryList"
+        app:layout_constraintEnd_toStartOf="@id/leftSideGuideline"/>
+    <Button
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:id="@+id/newItemCheck"
+        android:background="@drawable/ic_check_55b944_24dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/leftSideGuideline"
+        app:layout_constraintTop_toTopOf="@id/newItem"
+        app:layout_constraintBottom_toBottomOf="@id/newItem"/>
+    <Button
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:id="@+id/newItemCancel"
+        android:background="@drawable/ic_cancel_b9140b_24dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/newItem"
+        app:layout_constraintTop_toTopOf="@id/newItem"
+        app:layout_constraintBottom_toBottomOf="@id/newItem"/>
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:inputType="text"
+        android:id="@+id/newItem"
+        android:hint="@string/add_new_item"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/groceryList"
-        app:layout_constraintStart_toStartOf="@id/leftSideGuideline">
-        <Button
-            android:id="@+id/addItem"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_add_black_24dp"/>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:id="@+id/newItem"
-            android:hint="@string/add_new_item"
-            android:visibility="gone"/>
-    </LinearLayout>
+        app:layout_constraintStart_toEndOf="@id/leftSideGuideline"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

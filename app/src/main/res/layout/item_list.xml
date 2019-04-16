@@ -55,13 +55,17 @@
         android:id="@+id/editCheck"
         android:background="@drawable/ic_check_55b944_24dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/checkboxGuideline"/>
+        app:layout_constraintStart_toStartOf="@id/checkboxGuideline"
+        app:layout_constraintTop_toTopOf="@id/itemEdit"
+        app:layout_constraintBottom_toBottomOf="@id/itemEdit"/>
     <Button
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:id="@+id/editCancel"
         android:background="@drawable/ic_cancel_b9140b_24dp"
         android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@id/deleteGuideline"/>
+        app:layout_constraintStart_toEndOf="@id/deleteGuideline"
+        app:layout_constraintTop_toTopOf="@id/itemEdit"
+        app:layout_constraintBottom_toBottomOf="@id/itemEdit"/>
 
 </android.support.constraint.ConstraintLayout>

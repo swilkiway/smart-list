@@ -7,7 +7,7 @@ public class UpdateManager {
     private CurrListFragment currList;
     public void registerCurrList(CurrListFragment c) { currList = c; }
     public CurrListFragment getCurrList() { return currList; }
-    public void newListCreated() {
+    public void listsChanged() {
         currList.updateLists();
     }
     public void listSwitched(String listName) {

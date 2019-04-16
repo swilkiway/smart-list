@@ -73,11 +73,13 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
         private CheckBox wantButton;
         private SuggestionItem suggestion;
         private TextView nameView;
+        private TextView listView;
         private TextView sinceBoughtView;
 
         SuggestionHolder(View view) {
             super(view);
             nameView = view.findViewById(R.id.itemName);
+            listView = view.findViewById(R.id.itemList);
             sinceBoughtView = view.findViewById(R.id.sinceBought);
             wantButton = view.findViewById(R.id.wantButton);
             wantButton.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +96,9 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
             suggestion = s;
             wantButton.setChecked(suggestion.isChecked());
             nameView.setText(s.getName());
+            listView.setText(s.getListName());
             int weeks = s.getWeeksSinceBought();
-            String sinceBought = (weeks == 1 ? "1 week " : weeks + " weeks ") + "since bought";
+            String sinceBought = (weeks == 1 ? "1 week " : weeks + " weeks ") + "ago";
             sinceBoughtView.setText(sinceBought);
         }
     }

@@ -54,10 +54,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
         private Button removeButton;
         private PreviousItem grocery;
         private TextView nameView;
+        private TextView listView;
         private TextView frequencyView;
         ItemsHolder(View view) {
             super(view);
             nameView = view.findViewById(R.id.itemName);
+            listView = view.findViewById(R.id.itemList);
             frequencyView = view.findViewById(R.id.itemFrequency);
             removeButton = view.findViewById(R.id.deleteButton);
             removeButton.setOnClickListener(new View.OnClickListener() {
@@ -71,8 +73,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsHolder>
         void bind(PreviousItem g, int position) {
             grocery = g;
             nameView.setText(g.getName());
+            listView.setText(g.getListName());
             int weeks = g.getFrequency(new Date().getTime());
-            StringBuilder frequency = new StringBuilder("Every ");
+            StringBuilder frequency = new StringBuilder();
             if (weeks > 1) {
                 frequency.append(weeks);
                 frequency.append(" weeks");

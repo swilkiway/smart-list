@@ -51,7 +51,7 @@ public class NameListDialog extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Settings.addCurrentList(new CurrentList(nameView.getText().toString()));
+                Settings.addCurrentList(new CurrentList(nameView.getText().toString()), getActivity());
                 NameListDialog.this.dismiss();
             }
         });

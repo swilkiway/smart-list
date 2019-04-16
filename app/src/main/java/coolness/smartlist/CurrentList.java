@@ -12,6 +12,7 @@ public class CurrentList {
         current = true;
     }
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     public ArrayList<ListItem> getItems() { return items; }
     public void setItems(ArrayList<ListItem> items) { this.items = items; }
     public String getInfoStringify() {
@@ -20,4 +21,5 @@ public class CurrentList {
     public boolean isCurrentList() { return current; }
     public void setCurrent(boolean isCurrent) { current = isCurrent; }
     public void switchCurrent() { current = !current; }
+    public void addListItem(ListItem l) { items.add(l); }
 }

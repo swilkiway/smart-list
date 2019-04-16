@@ -8,14 +8,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/textGuideline"
-        app:layout_constraintGuide_percent=".19"/>
+        android:id="@+id/leftGuideline"
+        app:layout_constraintGuide_percent=".05"/>
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/frequencyGuideline"
+        android:id="@+id/leftMidGuideline"
+        app:layout_constraintGuide_percent=".36"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/rightMidGuideline"
         app:layout_constraintGuide_percent=".62"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/rightGuideline"
+        app:layout_constraintGuide_percent=".95"/>
     <Button
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -25,13 +37,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/itemName"
-        android:textSize="10pt"
+        android:textSize="9pt"
         android:paddingEnd="5dp"
-        app:layout_constraintStart_toStartOf="@id/textGuideline"/>
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintEnd_toEndOf="@id/leftMidGuideline"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemList"
+        android:textSize="9pt"
+        app:layout_constraintStart_toStartOf="@id/leftMidGuideline"
+        app:layout_constraintEnd_toEndOf="@id/rightMidGuideline"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/itemFrequency"
-        android:textSize="10pt"
-        app:layout_constraintStart_toEndOf="@id/frequencyGuideline"/>
+        android:textSize="9pt"
+        app:layout_constraintStart_toStartOf="@id/rightMidGuideline"
+        app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
 </android.support.constraint.ConstraintLayout>
