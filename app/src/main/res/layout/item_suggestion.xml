@@ -20,8 +20,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:id="@+id/listGuideline"
+        app:layout_constraintGuide_percent=".4"/>
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:id="@+id/sinceGuideline"
-        app:layout_constraintGuide_percent=".9"/>
+        app:layout_constraintGuide_percent=".97"/>
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,13 +38,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/itemName"
-        android:textSize="10pt"
+        android:textSize="8pt"
         app:layout_constraintStart_toStartOf="@id/nameGuideline"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/itemList"
+        android:textSize="8pt"
+        app:layout_constraintStart_toStartOf="@id/listGuideline"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/sinceBought"
-        android:textSize="10pt"
+        android:textSize="8pt"
         app:layout_constraintEnd_toEndOf="@id/sinceGuideline"/>
 
 </android.support.constraint.ConstraintLayout>

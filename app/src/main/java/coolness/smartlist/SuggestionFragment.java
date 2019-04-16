@@ -42,7 +42,7 @@ public class SuggestionFragment extends Fragment {
         keepItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Settings.addToList(suggestionAdapter.getCheckedItems(), getActivity());
+                Settings.addToLists(suggestionAdapter.getCheckedItems(), getActivity());
                 Fragment fragment = new CurrListFragment();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();

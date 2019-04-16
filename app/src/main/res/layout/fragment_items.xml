@@ -16,13 +16,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/middleLeftGuideline"
-        app:layout_constraintGuide_percent=".27"/>
+        app:layout_constraintGuide_percent=".36"/>
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/middleRightGuideline"
-        app:layout_constraintGuide_percent=".5"/>
+        app:layout_constraintGuide_percent=".62"/>
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,14 +34,21 @@
         android:layout_height="wrap_content"
         android:text="@string/prev_item"
         android:id="@+id/header"
+        app:layout_constraintStart_toStartOf="@id/leftSideGuideline"
         app:layout_constraintEnd_toEndOf="@id/middleLeftGuideline" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/prev_frequency"
-        app:layout_constraintStart_toStartOf="@id/middleRightGuideline"/>
-    <android.support.v7.widget.RecyclerView
+        android:text="@string/prev_list"
+        app:layout_constraintStart_toStartOf="@id/middleLeftGuideline"
+        app:layout_constraintEnd_toEndOf="@id/middleRightGuideline"/>
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/prev_frequency"
+        app:layout_constraintEnd_toStartOf="@id/rightSideGuideline"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/itemsList"
         app:layout_constraintStart_toStartOf="@id/leftSideGuideline"

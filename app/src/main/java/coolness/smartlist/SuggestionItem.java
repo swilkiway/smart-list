@@ -4,10 +4,12 @@ public class SuggestionItem {
     private String name;
     private int weeksSinceBought;
     private boolean checked;
-    public SuggestionItem(String name, long millis) {
+    private String listName;
+    public SuggestionItem(String name, long millis, String listName) {
         this.name = name;
         weeksSinceBought = (int)(millis / 604800000L);
         checked = true;
+        this.listName = listName;
     }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -19,4 +21,6 @@ public class SuggestionItem {
         checked = !checked;
         return checked;
     }
+    public void setListName(String listName) { this.listName = listName; }
+    public String getListName() { return listName; }
 }
