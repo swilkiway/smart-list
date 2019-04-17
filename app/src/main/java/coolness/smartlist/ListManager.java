@@ -16,29 +16,27 @@ public class ListManager {
     private static int expirationWeeks = 6;
     private static UpdateManager updateManager;
     private static ArrayList<CurrentList> currentLists = new ArrayList<>();
-    private static String currentListName;
-    private static ArrayList<ListItem> currentList = new ArrayList<>();
+    private static CurrentList currentList;
+//    private static String currentListName;
+//    private static ArrayList<ListItem> currentList = new ArrayList<>();
     private static ArrayList<PreviousItem> previousItems = new ArrayList<>();
-    public static String getCurrentListName() { return currentListName; }
     public static int getExpirationWeeks() { return expirationWeeks; }
-    public static ArrayList<ListItem> getCurrentList() {
-        return currentList;
+    public static ArrayList<ListItem> getCurrentListItems() {
+        return currentList.getItems();
     }
+    public static CurrentList getCurrentList() { return currentList; }
+    public static String getCurrentListName() { return currentList.getName(); }
     public static void setCurrentListName(String listName, Activity activity) {
-        for (CurrentList c : currentLists) {
-            if (c.getName().equals(currentListName)) {
-                c.setName(listName);
-            }
-        }
-        currentListName = listName;
+        currentList.setName(listName);
         writeCurrentLists(activity);
         updateManager.listsChanged();
     }
     public static void addCurrentList(CurrentList c, Activity activity) {
+        currentList.setCurrent(false);
+        c.setCurrent(true);
         currentLists.add(c);
-        currentList = new ArrayList<>();
-        currentListName = c.getName();
         writeCurrentLists(activity);
+        currentList = c;
         updateManager.listsChanged();
         updateManager.listSwitched(c.getName());
     }
@@ -59,23 +57,22 @@ public class ListManager {
         return false;
     }
     public static void setCurrentList(String listName) {
-        for (CurrentList c : currentLists) {
-            if (c.getName().equals(currentListName)) {
-                c.setItems(currentList);
-                c.switchCurrent();
+        for (int i = 0; i < currentLists.size(); i++) {
+            if (currentLists.get(i).getName().equals(currentList.getName())) {
+                currentLists.set(i, currentList);
+                currentList.switchCurrent();
             }
         }
         for (CurrentList c : currentLists) {
             if (c.getName().equals(listName)) {
-                currentList = c.getItems();
-                currentListName = listName;
-                c.switchCurrent();
+                currentList = c;
+                currentList.switchCurrent();
             }
         }
         updateManager.listSwitched(listName);
     }
     public static void addToList(ListItem grocery, Activity activity) {
-        currentList.add(grocery);
+        currentList.addListItem(grocery);
         writeCurrentLists(activity);
     }
     public static void addToLists(ArrayList<SuggestionItem> suggestions, Activity activity) {
@@ -89,7 +86,7 @@ public class ListManager {
         writeCurrentLists(activity);
     }
     public static void removeFromList(ListItem grocery, Activity activity) {
-        currentList.remove(grocery);
+        currentList.removeItem(grocery);
         writeCurrentLists(activity);
     }
     public static boolean listContains(String grocery) {
@@ -112,26 +109,22 @@ public class ListManager {
         previousItems.add(new PreviousItem(name, today, listName));
     }
     public static void setChecked(ListItem g, boolean checked) {
-        int index = currentList.indexOf(g);
-        currentList.get(index).setChecked(checked);
+        currentList.setItemChecked(g, checked);
     }
     public static void clearCheckedItems(Activity activity) {
-        for (int i = currentList.size() - 1; i >= 0; i--) {
-            if (currentList.get(i).isChecked()) {
-                updatePrevItems(currentList.get(i).getName(), new Date().getTime(), currentListName);
-                currentList.remove(i);
+        ArrayList<ListItem> items = currentList.getItems();
+        for (int i = items.size() - 1; i >= 0; i--) {
+            if (items.get(i).isChecked()) {
+                updatePrevItems(items.get(i).getName(), new Date().getTime(), currentList.getName());
+                items.remove(i);
             }
         }
+        currentList.setItems(items);
         writePreviousItems(activity);
         writeCurrentLists(activity);
     }
     public static void modifyListItem(String oldName, String newName, Activity activity) {
-        for (int i = 0; i < currentList.size(); i++) {
-            if (currentList.get(i).getName().equals(oldName)) {
-                currentList.get(i).setName(newName);
-                break;
-            }
-        }
+        currentList.modifyItem(oldName, newName);
         writeCurrentLists(activity);
     }
     public static ArrayList<PreviousItem> getPreviousItems() { return previousItems; }
@@ -167,25 +160,23 @@ public class ListManager {
     }
     public static void deleteCurrentList(Activity activity) {
         for (int i = currentLists.size() - 1; i >= 0; i--) {
-            if (currentLists.get(i).getName().equals(currentListName)) {
+            if (currentLists.get(i).getName().equals(currentList.getName())) {
                 currentLists.remove(i);
             }
         }
         for (int i = previousItems.size() - 1; i >= 0; i--) {
-            if (previousItems.get(i).getListName().equals(currentListName)) {
+            if (previousItems.get(i).getListName().equals(currentList.getName())) {
                 previousItems.remove(i);
             }
         }
         if (currentLists.size() > 0) {
-            currentList = currentLists.get(0).getItems();
-            currentListName = currentLists.get(0).getName();
+            currentList = currentLists.get(0);
         } else {
-            currentList = new ArrayList<>();
-            currentListName = "Unnamed list";
-            currentLists.add(new CurrentList("Unnamed list"));
+            currentList = new CurrentList("Unnamed list");
+            currentLists.add(currentList);
         }
         updateManager.listsChanged();
-        updateManager.listSwitched(currentListName);
+        updateManager.listSwitched(currentList.getName());
         writeCurrentLists(activity);
         writePreviousItems(activity);
     }
@@ -219,6 +210,7 @@ public class ListManager {
                 CurrentList tmpList = new CurrentList(scanner.next());
                 tmpList.setCurrent(scanner.next().equals("y"));
                 int listSize = scanner.nextInt();
+                tmpList.setOneTimeTrip(scanner.next().equals("y"));
                 ArrayList<ListItem> tmpItems = new ArrayList<>();
                 for (int i = 0; i < listSize; i++) {
                     ListItem tmp = new ListItem();
@@ -281,15 +273,12 @@ public class ListManager {
         readPreviousItems(activity);
         if (currentLists.size() > 0) {
             int index = findCurrentList();
-            currentListName = currentLists.get(index).getName();
-            currentList = currentLists.get(index).getItems();
-            currentLists.get(index).setCurrent(true);
+            currentList = currentLists.get(index);
+            currentList.setCurrent(true);
         } else {
-            currentListName = "Unnamed list";
-            currentList = new ArrayList<>();
-            CurrentList c = new CurrentList("Unnamed list");
-            c.setCurrent(true);
-            currentLists.add(c);
+            currentList = new CurrentList("Unnamed list");
+            currentList.setCurrent(true);
+            currentLists.add(currentList);
         }
     }
     public static void initializeUpdateManager(CurrListFragment fragment) {
@@ -297,6 +286,6 @@ public class ListManager {
     }
 
     public static boolean isInitialized() {
-        return (!currentList.isEmpty() || !previousItems.isEmpty());
+        return (currentList != null || !previousItems.isEmpty());
     }
 }

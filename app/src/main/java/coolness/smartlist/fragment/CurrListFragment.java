@@ -59,7 +59,7 @@ public class CurrListFragment extends Fragment {
         RecyclerView.LayoutManager groceryManager = new LinearLayoutManager(getContext());
         groceryList.setLayoutManager(groceryManager);
         if (ListManager.getCurrentList() != null) {
-            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList());
+            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList().getItems());
         } else {
             groceryAdapter = new GroceryAdapter(this);
         }
@@ -221,7 +221,7 @@ public class CurrListFragment extends Fragment {
 
     public void switchLists(String listName) {
         if (ListManager.getCurrentList() != null) {
-            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList());
+            groceryAdapter = new GroceryAdapter(this, ListManager.getCurrentList().getItems());
         } else {
             groceryAdapter = new GroceryAdapter(this);
         }

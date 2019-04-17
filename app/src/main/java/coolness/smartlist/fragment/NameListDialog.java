@@ -34,6 +34,7 @@ public class NameListDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_name_list, new ConstraintLayout(getActivity()), false);
         nameView = view.findViewById(R.id.nameView);
+        databaseBox = view.findViewById(R.id.databaseBox);
         nameView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -54,7 +55,7 @@ public class NameListDialog extends DialogFragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ListManager.addCurrentList(new CurrentList(nameView.getText().toString()), getActivity());
+                ListManager.addCurrentList(new CurrentList(nameView.getText().toString(), databaseBox.isChecked()), getActivity());
                 NameListDialog.this.dismiss();
             }
         });
