@@ -31,6 +31,14 @@ public class ListManager {
         writeCurrentLists(activity);
         updateManager.listsChanged();
     }
+    public static int getCurrentListIndex() {
+        for (int i = 0; i < currentLists.size(); i++) {
+            if (currentLists.get(i).getName().equals(currentList.getName())) {
+                return i;
+            }
+        }
+        return 0;
+    }
     public static void addCurrentList(CurrentList c, Activity activity) {
         currentList.setCurrent(false);
         c.setCurrent(true);
@@ -115,7 +123,9 @@ public class ListManager {
         ArrayList<ListItem> items = currentList.getItems();
         for (int i = items.size() - 1; i >= 0; i--) {
             if (items.get(i).isChecked()) {
-                updatePrevItems(items.get(i).getName(), new Date().getTime(), currentList.getName());
+                if (!currentList.isOneTimeTrip()) {
+                    updatePrevItems(items.get(i).getName(), new Date().getTime(), currentList.getName());
+                }
                 items.remove(i);
             }
         }
@@ -208,7 +218,8 @@ public class ListManager {
             scanner.useDelimiter(",");
             while (scanner.hasNext()) {
                 CurrentList tmpList = new CurrentList(scanner.next());
-                tmpList.setCurrent(scanner.next().equals("y"));
+                String yo = scanner.next();
+                tmpList.setCurrent(yo.equals("y"));
                 int listSize = scanner.nextInt();
                 tmpList.setOneTimeTrip(scanner.next().equals("y"));
                 ArrayList<ListItem> tmpItems = new ArrayList<>();

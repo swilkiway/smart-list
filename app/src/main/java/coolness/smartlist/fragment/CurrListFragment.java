@@ -129,7 +129,6 @@ public class CurrListFragment extends Fragment {
         lineView = view.findViewById(R.id.lineView);
         switchLists = view.findViewById(R.id.switchLists);
         updateLists();
-        switchLists.setSelection(0);
         switchLists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -217,6 +216,10 @@ public class CurrListFragment extends Fragment {
                 android.R.layout.simple_spinner_item, ListManager.getCurrentListNames());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         switchLists.setAdapter(spinnerAdapter);
+        if (ListManager.getCurrentList() != null) {
+            int index = ListManager.getCurrentListIndex();
+            switchLists.setSelection(index);
+        }
     }
 
     public void switchLists(String listName) {
