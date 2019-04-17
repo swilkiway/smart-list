@@ -98,9 +98,6 @@ public class CurrListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 itemEditModeOn();
-                newItem.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
         });
         newItemCheck.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +126,6 @@ public class CurrListFragment extends Fragment {
         lineView = view.findViewById(R.id.lineView);
         switchLists = view.findViewById(R.id.switchLists);
         updateLists();
-        switchLists.setSelection(0);
         switchLists.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -217,6 +213,10 @@ public class CurrListFragment extends Fragment {
                 android.R.layout.simple_spinner_item, ListManager.getCurrentListNames());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         switchLists.setAdapter(spinnerAdapter);
+        if (ListManager.getCurrentList() != null) {
+            int index = ListManager.getCurrentListIndex();
+            switchLists.setSelection(index);
+        }
     }
 
     public void switchLists(String listName) {
@@ -241,6 +241,12 @@ public class CurrListFragment extends Fragment {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public void showKeyboard(EditText editText) {
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, 0);
+    }
+
     public void listEditModeOn() {
         listNameView.setVisibility(View.INVISIBLE);
         deleteList.setVisibility(View.INVISIBLE);
@@ -250,6 +256,7 @@ public class CurrListFragment extends Fragment {
         listNameEdit.setText(ListManager.getCurrentListName());
         listNameCancel.setVisibility(View.VISIBLE);
         listNameCheck.setVisibility(View.VISIBLE);
+        showKeyboard(listNameEdit);
     }
 
     public void listEditModeOff() {
@@ -260,6 +267,7 @@ public class CurrListFragment extends Fragment {
         deleteList.setVisibility(View.VISIBLE);
         addItem.setVisibility(View.VISIBLE);
         lineView.setVisibility(View.VISIBLE);
+        hideKeyboard();
     }
 
     public void itemEditModeOn() {
@@ -267,6 +275,7 @@ public class CurrListFragment extends Fragment {
         newItem.setVisibility(View.VISIBLE);
         newItemCancel.setVisibility(View.VISIBLE);
         newItemCheck.setVisibility(View.VISIBLE);
+        showKeyboard(newItem);
     }
 
     public void itemEditModeOff() {
@@ -274,6 +283,7 @@ public class CurrListFragment extends Fragment {
         newItemCheck.setVisibility(View.GONE);
         newItemCancel.setVisibility(View.GONE);
         addItem.setVisibility(View.VISIBLE);
+        hideKeyboard();
     }
 
     public boolean onItemAdded() {
@@ -288,7 +298,6 @@ public class CurrListFragment extends Fragment {
             newItem.setText("");
             handled = true;
             itemEditModeOff();
-            hideKeyboard();
         }
         return handled;
     }
@@ -303,14 +312,8 @@ public class CurrListFragment extends Fragment {
             justEditedName = true;
             String newName = listNameEdit.getText().toString();
             ListManager.setCurrentListName(newName, getActivity());
-            listNameEdit.setVisibility(View.GONE);
-            listNameCheck.setVisibility(View.GONE);
-            listNameCancel.setVisibility(View.GONE);
-            listNameView.setVisibility(View.VISIBLE);
+            listEditModeOff();
             listNameView.setText(newName);
-            deleteList.setVisibility(View.VISIBLE);
-            addItem.setVisibility(View.VISIBLE);
-            lineView.setVisibility(View.VISIBLE);
         }
     }
 }

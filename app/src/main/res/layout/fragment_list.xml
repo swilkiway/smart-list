@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/listNameEdit"
         android:textSize="10pt"
-        android:hint="@string/edit_hint"
+        android:hint="@string/list_hint"
         android:visibility="gone"
         android:inputType="text"
         android:padding="-1dp"

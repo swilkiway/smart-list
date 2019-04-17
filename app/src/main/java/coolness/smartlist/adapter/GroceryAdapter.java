@@ -86,6 +86,10 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
         fragment.anyItemsChecked(anyItemsChecked());
     }
 
+    private void showKeyboard(EditText editText) { fragment.showKeyboard(editText); }
+
+    private void hideKeyboard() { fragment.hideKeyboard(); }
+
     class GroceryHolder extends RecyclerView.ViewHolder {
         private Button removeButton;
         private CheckBox boughtButton;
@@ -162,6 +166,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
             nameEdit.setText(grocery.getName());
             editCancel.setVisibility(View.VISIBLE);
             editCheck.setVisibility(View.VISIBLE);
+            GroceryAdapter.this.showKeyboard(nameEdit);
         }
         void editModeOff() {
             nameEdit.setVisibility(View.GONE);
@@ -171,6 +176,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.GroceryH
             boughtButton.setVisibility(View.VISIBLE);
             removeButton.setVisibility(View.VISIBLE);
             GroceryAdapter.this.setAddButtonVisibility(View.VISIBLE);
+            GroceryAdapter.this.hideKeyboard();
         }
     }
 }
